@@ -1,0 +1,11 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  generateName: tutorial-pipeline-run-
+  namespace: default
+spec:
+  params:
+  - name: label
+    value: test-leases
+  pipelineRef:
+    name: tutorial-pipeline
