@@ -1,0 +1,23 @@
+apiVersion: tekton.dev/v1alpha1
+kind: Task
+metadata:
+  name: acquire-lease-task
+spec:
+  params:
+  - name: label
+  steps:
+    - name: create-lease
+      image: bitnami/kubectl:1.16.3
+      script: |
+        export TIMEOUT="20m"
+        # EOF in yaml is hard, so make a file the simple way
+        echo "apiVersion: \"somegroup.org/v1\"" > e2e-lease.yaml
+        echo "kind: Lease" >> e2e-lease.yaml
+        echo "metadata:" >> e2e-lease.yaml
+        echo "  name: e2e-lease" >> e2e-lease.yaml
+        echo "  label: $(inputs.params.label)" >> e2e-lease.yaml            
+        ls
+
+        kubectl create -f e2e-lease.yaml || (echo Waiting for lease && kubectl wait --for=delete lease.somegroup.org/e2e-lease --timeout=$TIMEOUT || ( echo "Grabbing abandoned lease." && kubectl delete lease.somegroup.org/e2e-lease ))
+        kubectl apply -f e2e-lease.yaml
+        echo "Done"

@@ -1,0 +1,12 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: hello-test
+spec:
+  steps:
+    - name: hello-test
+      image: ubuntu:latest
+      workingDir: /workspace
+      script: |
+        #!/bin/bash
+        echo "Hello from test task!"

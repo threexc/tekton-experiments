@@ -1,0 +1,11 @@
+apiVersion: tekton.dev/v1alpha1
+kind: Task
+metadata:
+  name: release-lease-task
+spec:
+  params:
+    - name: label
+  steps:
+    - name: delete-lease
+      image: bitnami/kubectl:1.16.3
+      script: kubectl delete lease.somegroup.org --ignore-not-found=true --field-selector metadata.label=$(inputs.params.label) --field-selector metadata.name=e2e-lease

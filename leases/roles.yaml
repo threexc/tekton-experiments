@@ -1,0 +1,29 @@
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: tekton-leases-role
+rules:
+  - apiGroups:
+    - somegroup.org
+    resources:
+      - leases
+    verbs:
+      - get
+      - create
+      - update
+      - patch
+      - delete
+      - watch
+      - list
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: tekton-leases-rolebinding
+subjects:
+  - kind: ServiceAccount
+    name: default
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: tekton-leases-role

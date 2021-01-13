@@ -1,0 +1,28 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: tutorial-pipeline
+spec:
+  params:
+  - name: label
+    default: test-leases
+  tasks:
+    - name: acquire-lease
+      params:
+      - name: label
+        value: $(params.label)
+      taskRef:
+        name: acquire-lease-task
+    - name: hello-test
+      taskRef:
+        name: hello-test
+      runAfter:
+        - acquire-lease
+    - name: release-lease
+      params:
+      - name: label
+        value: $(params.label)
+      taskRef:
+        name: release-lease-task
+      runAfter:
+        - hello-test
